@@ -1,76 +1,99 @@
-## Ex.No:1
-## Ex.Name: Graph Implementation using STL (DFS of Unweighted and Undirected Graph)
+## Ex.No:2
+## Ex.Name: Topological Sorting (using vector and algorithm STLs)
 ## Date: 27/10/25
 
 ## Aim:
-To write a C++ program to implement a Graph using STL for competitive programming and perform Depth First Search (DFS) on an unweighted and undirected graph.
+To Write A C++ Program for Topological Sorting (using vector and algorithm STLs)
+image
 
-## Algorithm:
+## Algorithm
 Start the program.
 
-Read the number of edges in the graph.
+Define a pair struct with:
+two integers: a and b
+a constructor pair(int a, int b)
+a print(std::ostream&) method that outputs (a, b)
 
-Create an adjacency list representation of the graph using vector<int> adj[].
+Overload operator<< for pair so std::cout << p prints (a, b) by calling print.
 
-For each edge (u, v):
+Define a comparator topological_pair_comparator with:
 
-Add v to adj[u].
+bool operator()(const pair& p, const pair& q) const
+Return true only if p.a < q.a and p.b < q.b
+(i.e., p strictly dominates q on both coordinates).
 
-Add u to adj[v] (since the graph is undirected).
+Create a global std::vector<pair> named pairs and initialize it with:
+(1,1), (1,2), (2,1), (3,1), (1,3), (2,2), (4,0), (5,5)
 
-Implement a DFS function:
+In main():
+Call std::sort(pairs.begin(), pairs.end(), tpc) to reorder the vector using the dominance comparator.
 
-Mark the starting node as visited.
+For any two elements p and q:
+If p.a < q.a and p.b < q.b, then p is placed before q.
 
-Recursively visit all its unvisited adjacent vertices.
+If neither dominates the other (e.g., (2,1) vs (1,2)), the comparator returns false both ways; their relative order is not strictly defined.
 
-Call the DFS function from the given starting vertex.
+Iterate over the (re)ordered vector and print each pair with std::cout << p << " ".
 
-Print the DFS traversal order.
-
-Stop the program.
+Print a newline and stop the program.
 
 ## Program:
 ```
-#include <bits/stdc++.h>
-using namespace std;
+#include <iostream>
+#include <vector>
+#include <algorithm>
 
-void addEdge(vector<int> adj[], int u, int v)
+struct pair 
 {
-    adj[u].push_back(v); //singly linked ,not bidirectional
-}
+	int a, b;
+	pair(int a, int b) : a(a), b(b) {}
+	
+	std::ostream &print(std::ostream &out) const 
+	{
+		return (out << "(" << a << ", " << b << ")");
+	}
+};
 
-void DFS(vector<int> adj[], int v, vector<bool> &vis)
-{
-    vis[v] = true;
-    cout << v << " ";
-    //for(int i=0;i<adj[v].size() ; i++)
-    for (auto i : adj[v])
-    {
-        //if(!vis[adj[v][i]])
-        if (vis[i] == false)
-            DFS(adj, i, vis);
-    }
-}
-
-int main()
+std::ostream &operator<<(std::ostream &out, const pair &p) 
 { 
-    int n,a,b;
-    cin>>n;
-    vector<int> adj[n];
-    vector<bool> visited(n, false);
-    for(int i=0; i<n; i++)
-    {
-        cin>>a>>b;
-        addEdge(adj, a,b);
-    }
-    DFS(adj, 1, visited);
+    return p.print(out); 
+    
+}
+
+struct topological_pair_comparator 
+{
+	bool operator()(const pair &p, const pair &q) const 
+	{ 
+	    return p.a<q.a && p.b<q.b; 
+	    
+	}
+} tpc;
+
+std::vector<pair> pairs = 
+{
+    pair(1,1),
+    pair(1,2),
+    pair(2,1),
+    pair(3,1),
+    pair(1,3),
+    pair(2,2),
+    pair(4,0),
+    pair(5,5)
+
+//write code here
+};
+
+int main() {
+	std::sort(pairs.begin(), pairs.end(), tpc);
+	for(const pair &p : pairs) std::cout << p << " ";
+	std::cout << std::endl;
+	return 0;
 }
 ```
 ## Output:
-.<img width="863" height="871" alt="481635357-75bb7076-0e4d-427a-96d2-075ed8fe4ab7" src="https://github.com/user-attachments/assets/b17a78a1-fdd6-4ffe-aed7-2af425f4d8a6" />
+<img width="1228" height="307" alt="484117028-9eb8527e-c9cd-4567-9ab8-699fe01dcd01" src="https://github.com/user-attachments/assets/ff1c43b6-7f97-467f-aa4b-fa9aaf4835b0" />
 
 
 
 ## Result:
-The Program Executed Successfully
+The Program Executed Successfully.
